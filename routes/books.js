@@ -7,9 +7,24 @@ router.get('/search',function(req, res, next){
 });
 
 router.get('/search-result', function (req, res, next) {
-    //searching in the database
-    res.send("You searched for: " + req.query.keyword)
+    let keyword = req.query.keyword;
+
+    let sqlquery = "SELECT * FROM books WHERE name LIKE ?";
+
+    let searchValue = '%' + keyword + '%';
+
+    db.query(sqlquery, [searchValue], (err, result) => {
+        if (err) {
+            next(err);
+        } else {
+            res.render('search-result.ejs', {
+                searchTerm: keyword,
+                searchResults: result
+            });
+        }
+    });
 });
+
 
 router.get('/list', function(req, res, next) {
     let sqlquery = "SELECT * FROM books"; // query database to get all the books

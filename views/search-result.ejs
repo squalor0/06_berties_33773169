@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results – Bertie&apos;s Books</title>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+<body>
+
+    <h1>Search Results</h1>
+
+    <h2>Results for: "<%= searchTerm %>"</h2>
+
+    <% if (searchResults && searchResults.length > 0) { %>
+        <ul>
+            <% searchResults.forEach(function (book) { %>
+                <li><%= book.name %>, &pound;<%= book.price %></li>
+            <% }) %>
+        </ul>
+    <% } else { %>
+        <p>No books found matching "<%= searchTerm %>".</p>
+    <% } %>
+
+    <p><a href="/search">Back to search</a></p>
+    <p><a href="/">Back to home</a></p>
+
+</body>
+</html>
