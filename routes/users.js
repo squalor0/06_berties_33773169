@@ -21,6 +21,50 @@ router.get('/register', function (req, res, next) {
     res.render('register.ejs')
 })
 
+router.get('/login', function (req, res, next) {
+    res.render('login.ejs');
+});
+
+router.post('/loggedin', function (req, res, next) {
+
+    let username = req.body.username;
+
+    // Select the hashed password for usr
+    let sqlquery = "SELECT hashedPassword FROM users WHERE username = ?";
+
+    db.query(sqlquery, [username], (err, result) => {
+        if (err) {
+            next(err);
+        } else {
+            if (result.length == 0) {
+                // No username in database
+                res.send("Login failed: incorrect username or password.");
+            } else {
+                let hashedPassword = result[0].hashedPassword;
+
+                // Compare passwords
+                bcrypt.compare(req.body.password, hashedPassword, function(err, result) {
+                  if (err) {
+                    // TODO: Handle error
+                    res.send("An error occurred during login.");
+                  }
+                  else if (result == true) {
+                    // TODO: Send message
+                    res.send("Login successful! Welcome, " + username + ".");
+                  }
+                  else {
+                    // TODO: Send message
+                    res.send("Login failed: incorrect username or password.");
+                  }
+                });
+            }
+
+        }
+    });
+
+});
+
+
 router.post('/registered', function (req, res, next) {
     const plainPassword = req.body.password
 
