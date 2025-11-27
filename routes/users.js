@@ -123,30 +123,32 @@ router.post(
             const username = req.sanitize(req.body.username);
             const email = req.sanitize(req.body.email);
 
-    const plainPassword = req.body.password
+            const plainPassword = req.body.password
 
-    bcrypt.hash(plainPassword, saltRounds, function(err, hashedPassword) {
-        let sqlquery = "INSERT INTO users (username, firstName, lastName, email, hashedPassword) VALUES (?, ?, ?, ?, ?)";
+            bcrypt.hash(plainPassword, saltRounds, function(err, hashedPassword) {
+                let sqlquery = "INSERT INTO users (username, firstName, lastName, email, hashedPassword) VALUES (?, ?, ?, ?, ?)";
 
-        let newrecord = [
-            username,
-            first,
-            last,
-            email,
-            hashedPassword
-        ];
+                let newrecord = [
+                    username,
+                    first,
+                    last,
+                    email,
+                    hashedPassword
+                ];
 
-        db.query(sqlquery, newrecord, (err, result) => {
-            if (err) {
-                next(err);
-            } else {
-                result = 'Hello '+ first + ' '+ last +' you are now registered!  We will send an email to you at ' + email
-                result += ', your password is: '+ req.body.password +' and your hashed password is: '+ hashedPassword
-                res.send(result)
-            }
-        });
-    });                                                                            
-}); 
+                db.query(sqlquery, newrecord, (err, result) => {
+                    if (err) {
+                        next(err);
+                    } else {
+                        result = 'Hello '+ first + ' '+ last +' you are now registered!  We will send an email to you at ' + email
+                        result += ', your password is: '+ req.body.password +' and your hashed password is: '+ hashedPassword
+                        res.send(result)
+                    }
+                });
+            });                                                                            
+        }
+    }
+); 
 
 // Export the router object so index.js can access it
 module.exports = router
