@@ -9,6 +9,9 @@ It demonstrates:
 - **MySQL** for persistent data
 - Dotenv implementation
 - Login Auditing
+- Session-based authentication
+- Validation and sanitisation of user input
+- Basic access control using sessions
 
 ---
 
@@ -27,6 +30,40 @@ If the username does not exist or the password is incorrect, a record with succe
 If the password matches the stored hash, a record with success set to 1 is inserted. 
 A new route called /users/audit was created to allow all audit records to be displayed. 
 An audit.ejs page was added to show the list of login attempts, including the username, whether the attempt was successful, and the time it occurred.
+
+## Validation
+
+Server-side validation was added using the express-validator module.
+On the registration page, the following checks were added:
+- The email field must contain a valid email address.
+- The username must be between 5 and 20 characters.
+- The password must be at least 8 characters long.
+- First name and last name must not be empty.
+
+If any validation fails, the user is returned to the registration page without inserting invalid data into the database.
+Additional validation was added to the Add Book page to ensure that book titles are not empty and that prices are numeric.
+
+## Sanitization
+
+Sanitisation was added using express-sanitizer to protect the application from XSS attacks.
+Fields that accept free-text input, such as first name, last name, username, email, book names and search keywords, were sanitised using req.sanitize before the values were stored or displayed.
+
+Passwords were not sanitised because altering them would prevent correct authentication.
+Only fields that represent user-entered free text were sanitised to prevent malicious scripts while still allowing normal characters.
+
+## Access Control
+
+Session-based authorisation was added using express-session.
+A redirectLogin middleware function was created to protect routes that should only be accessible to authenticated users.
+
+The following routes were restricted:
+- /users/list
+- /users/audit
+- /books/addbook
+
+These pages contain sensitive information or allow data modification, so they require the user to be logged in.
+Routes such as /books/list, /books/bargainbooks and /search remain publicly accessible so visitors can browse books without logging in.
+A logout route was added to allow users to end their session.
 
 ---
 
