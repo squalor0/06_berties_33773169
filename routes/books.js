@@ -2,6 +2,8 @@
 const express = require("express")
 const router = express.Router()
 
+const { check, validationResult } = require('express-validator');
+
 const redirectLogin = (req, res, next) => {
     if (!req.session.userId) {
       res.redirect('/users/login') // redirect to the login page
@@ -15,7 +17,7 @@ router.get('/search',function(req, res, next){
 });
 
 router.get('/search-result', function (req, res, next) {
-    let keyword = req.query.keyword;
+    let keyword = req.sanitize(req.query.keyword);
 
     let sqlquery = "SELECT * FROM books WHERE name LIKE ?";
 
@@ -63,25 +65,41 @@ router.get('/bargainbooks', function (req, res, next) {
 });
 
 
-router.post('/bookadded', function (req, res, next) {
-    // saving data in database
-    let sqlquery = "INSERT INTO books (name, price) VALUES (?, ?)";
-    // execute sql query
-    let newrecord = [req.body.name, req.body.price];
-
-    db.query(sqlquery, newrecord, (err, result) => {
-        if (err) {
-            next(err);
-        } else {
-            res.send(
-                'This book is added to database, name: ' +
-                req.body.name +
-                ' price ' +
-                req.body.price
-            );
+router.post('/bookadded', 
+    [
+        check('name').notEmpty(),
+        check('price').isFloat({ min: 0 })
+    ],
+    function (req, res, next) {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.render('addbook.ejs');
         }
-    });
-});
+
+        const name = req.sanitize(req.body.name);
+        const price = req.body.price;
+
+
+
+        // saving data in database
+        let sqlquery = "INSERT INTO books (name, price) VALUES (?, ?)";
+        // execute sql query
+        let newrecord = [name, price];
+
+        db.query(sqlquery, newrecord, (err, result) => {
+            if (err) {
+                next(err);
+            } else {
+                res.send(
+                    'This book is added to database, name: ' +
+                    name +
+                    ' price ' +
+                    price
+                );
+            }
+        });
+    }
+);
 
 // Export the router object so index.js can access it
 module.exports = router

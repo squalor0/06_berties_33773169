@@ -118,6 +118,10 @@ router.post(
             return res.render('./register');
         }
         else {
+            const first = req.sanitize(req.body.first);
+            const last = req.sanitize(req.body.last);
+            const username = req.sanitize(req.body.username);
+            const email = req.sanitize(req.body.email);
 
     const plainPassword = req.body.password
 
@@ -125,10 +129,10 @@ router.post(
         let sqlquery = "INSERT INTO users (username, firstName, lastName, email, hashedPassword) VALUES (?, ?, ?, ?, ?)";
 
         let newrecord = [
-            req.body.username,
-            req.body.first,
-            req.body.last,
-            req.body.email,
+            username,
+            first,
+            last,
+            email,
             hashedPassword
         ];
 
@@ -136,7 +140,7 @@ router.post(
             if (err) {
                 next(err);
             } else {
-                result = 'Hello '+ req.body.first + ' '+ req.body.last +' you are now registered!  We will send an email to you at ' + req.body.email
+                result = 'Hello '+ first + ' '+ last +' you are now registered!  We will send an email to you at ' + email
                 result += ', your password is: '+ req.body.password +' and your hashed password is: '+ hashedPassword
                 res.send(result)
             }
