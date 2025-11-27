@@ -25,7 +25,7 @@ router.get('/list', redirectLogin, function(req, res, next) {
     });
 });
 
-router.get('/audit', function (req, res, next) {
+router.get('/audit', redirectLogin, function (req, res, next) {
     let sqlquery = "SELECT username, success, time FROM audit ORDER BY time DESC";
 
     db.query(sqlquery, (err, result) => {
