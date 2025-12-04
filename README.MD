@@ -91,7 +91,7 @@ Returns only books with a price less than or equal to the specified value.
 Example:
 `/api/books?maxprice=20`
 
-`Price range`
+**Price range**
 You can combine minprice and maxprice:
 `/api/books?minprice=5&maxprice=15`
 
