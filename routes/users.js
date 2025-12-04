@@ -47,6 +47,16 @@ router.get('/login', function (req, res, next) {
     res.render('login.ejs');
 });
 
+router.get('/logout', redirectLogin, (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            return res.redirect('./login');
+        }
+        res.send('you are now logged out. <a href='+'../'+'>Home</a>');
+    });
+});
+
+
 router.post('/loggedin', function (req, res, next) {
 
     let username = req.body.username;
