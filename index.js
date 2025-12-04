@@ -66,6 +66,7 @@ const weatherRoutes = require('./routes/weather');
 app.use('/', weatherRoutes);
 
 // Load the route handlers for /api
+const apiRoutes = require('./routes/api');
 app.use('/api', apiRoutes);
 
 // Start the web app listening
