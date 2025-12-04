@@ -48,7 +48,7 @@ router.get('/list', function(req, res, next) {
      });
 });
 
-router.get('/addbook', redirectLogin, function (req, res, next) {
+router.get('/add', redirectLogin, function (req, res, next) {
     res.render('addbook.ejs');
 });
 
@@ -65,7 +65,7 @@ router.get('/bargainbooks', function (req, res, next) {
 });
 
 
-router.post('/bookadded', 
+router.post('/add', redirectLogin,
     [
         check('name').notEmpty(),
         check('price').isFloat({ min: 0 })
